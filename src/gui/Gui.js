@@ -75,7 +75,7 @@ class Gui {
     ctrls[idc++] = this._ctrlSculpting = new GuiSculpting(this._sidebar, this);
 
     // gui extra
-    var extra = this._topbar.addExtra();
+    // var extra = this._topbar.addExtra();
     // Extra : Настройка интерфейса
     extra.addTitle(TR('contour'));
     extra.addColor(TR('contourColor'), ShaderContour.color, this.onContourColor.bind(this));

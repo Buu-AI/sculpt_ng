@@ -1,6 +1,8 @@
+/* GUI - Updated to match global.css theme */
 * {
-  font: 13px 'Open Sans', sans-serif;
-  color: #bbb;
+  font: 13px "Open Sans", sans-serif;
+  color: rgba(240, 240, 240, 0.89);
+  /* Updated to match global.css text colors */
   font-weight: 400;
   box-sizing: border-box;
   border: 0;
@@ -17,6 +19,7 @@
 body {
   overflow: hidden;
   margin: 0;
+  background: rgba(28, 32, 39, 1); /* Match global.css background */
 }
 
 #tablet-plugin {
@@ -34,7 +37,6 @@ body {
   display: block;
 }
 
-
 /****** SIDE BAR ******/
 
 .gui-sidebar {
@@ -43,12 +45,15 @@ body {
   top: 0;
   padding-bottom: 20px;
   width: 310px;
-  background: #3c3c3c;
+  background: rgba(28, 32, 39, 0.95); /* Updated to match global.css */
+  /* border: 1px solid rgba(255, 255, 255, 0.08);  */
+  /* Match global.css border pattern */
+  box-shadow: 0px 0px 46.6px 3px rgba(33, 42, 52, 0.8) inset; /* Match global.css shadows */
+  backdrop-filter: blur(40px); /* Match global.css backdrop blur */
   overflow-x: hidden;
   overflow-y: auto;
-  border-right: double;
-  border-width: 4px;
-  border-color: rgba(255, 255, 255, 0.3);
+  /* border-right: double; */
+  /* border-width: 4px; */
 }
 
 .gui-sidebar::-webkit-scrollbar {
@@ -78,13 +83,12 @@ body {
   opacity: 0;
 }
 
-
 /****** folder ******/
 
 .gui-sidebar > ul > label {
   font-size: 15px;
   font-weight: 600;
-  color: #999;
+  color: rgba(240, 240, 240, 0.89); /* Updated text color */
   position: relative;
   display: block;
   line-height: 30px;
@@ -93,19 +97,23 @@ body {
   cursor: pointer;
   vertical-align: middle;
   text-align: center;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(28, 32, 39, 0.4); /* Match global.css patterns */
+  /* border: 1px solid rgba(255, 255, 255, 0.08); */
+  backdrop-filter: blur(10px);
 }
 
-.gui-sidebar > ul[opened=true] > label:before {
-  content: '▼';
+.gui-sidebar > ul[opened="true"] > label:before {
+  content: "▼";
   text-indent: 1em;
   float: left;
+  color: #78dbff; /* Match global.css accent color */
 }
 
-.gui-sidebar > ul[opened=false] > label:before {
-  content: '►';
+.gui-sidebar > ul[opened="false"] > label:before {
+  content: "►";
   text-indent: 1em;
   float: left;
+  color: #78dbff; /* Match global.css accent color */
 }
 
 .gui-sidebar > ul {
@@ -119,11 +127,11 @@ body {
   transition: max-height 0.3s ease;
 }
 
-.gui-sidebar > ul[opened=true] {
+.gui-sidebar > ul[opened="true"] {
   max-height: 700px;
 }
 
-.gui-sidebar > ul[opened=false] {
+.gui-sidebar > ul[opened="false"] {
   height: 35px;
   max-height: 35px;
 }
@@ -134,13 +142,20 @@ body {
 }
 
 .gui-glowOnHover:hover {
-  background: rgba(0, 0, 0, 0.2);
+  color: white;
+  /* background: rgba(
+    120,
+    219,
+    255,
+    0.2
+  );  */
+  /* Updated to match global.css hover effects */
+  /* box-shadow: 0px 0px 10px rgba(120, 219, 255, 0.3); */
 }
 
 .gui-pointerOnHover:hover {
   cursor: pointer;
 }
-
 
 /****** label ******/
 
@@ -152,8 +167,8 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: rgba(240, 240, 240, 0.89); /* Updated text color */
 }
-
 
 /****** checkbox ******/
 
@@ -165,30 +180,37 @@ body {
   float: right;
   cursor: pointer;
   position: relative;
-  border: 1px solid;
+  border: 1px solid rgba(255, 255, 255, 0.08); 
+  /* Match global.css border */
   border-radius: 4px;
   margin-top: 2px;
   width: 18px;
   height: 18px;
+  background: rgba(28, 32, 39, 0.36); /* Match global.css background */
+  /* box-shadow: 0px 0px 7.8px 3px rgba(33, 42, 52, 0.8) inset; Match global.css shadows */
 }
 
 .gui-input-checkbox + label::before {
   position: absolute;
-  top: -5px;
+  top: -2px;
   left: 5px;
-  height: 14px;
+  height: 12px;
   width: 6px;
-  border-right: 2px solid;
-  border-bottom: 2px solid;
+  border-right: 2px solid #78dbff;
+  /* Match global.css accent */
+  border-bottom: 2px solid #78dbff;
   -webkit-transform: rotate(60deg) skew(25deg, 0);
   -ms-transform: rotate(60deg) skew(25deg, 0);
   transform: rotate(60deg) skew(25deg, 0);
 }
 
 .gui-input-checkbox:checked + label::before {
-  content: '';
+  content: "";
 }
 
+.gui-input-checkbox:checked + label {
+  /* background: rgba(120, 219, 255, 0.36); */
+}
 
 /****** input number ******/
 
@@ -203,7 +225,10 @@ body {
   outline: none;
   font-size: 10px;
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(28, 32, 39, 0.36); /* Match global.css */
+  /* border: 1px solid rgba(255, 255, 255, 0.08); */
+  color: rgba(240, 240, 240, 0.89);
+  /* box-shadow: 0px 0px 7.8px 3px rgba(33, 42, 52, 0.8) inset; */
 }
 
 .gui-widget-color > input::-webkit-inner-spin-button,
@@ -214,14 +239,13 @@ body {
   margin: 0;
 }
 
-
 /****** input on hover ******/
 
 .gui-slider:hover,
 .gui-input-number:hover {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(120, 219, 255, 0.2); /* Match global.css hover effects */
+  /* box-shadow: 0px 0px 10px rgba(120, 219, 255, 0.3); */
 }
-
 
 /****** slider ******/
 
@@ -233,14 +257,20 @@ body {
   height: 100%;
   overflow: hidden;
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(28, 32, 39, 0.36); /* Match global.css */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* box-shadow: 0px 0px 7.8px 3px rgba(33, 42, 52, 0.8) inset; */
 }
 
 .gui-slider > div {
   height: 100%;
-  background: #525f63;
+  background: linear-gradient(
+    90deg,
+    #78dbff 0%,
+    #caf1ff 100%
+  ); /* Match global.css gradient */
+  /* box-shadow: 0px 0px 5px rgba(120, 219, 255, 0.5); */
 }
-
 
 /****** button ******/
 
@@ -255,7 +285,11 @@ body {
   height: 100%;
   outline: none;
   border-radius: 4px;
-  background: #525f63;
+  background: rgba(28, 32, 39, 0.36); /* Match global.css */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(240, 240, 240, 0.89);
+  /* box-shadow: 0px 0px 7.8px 3px rgba(33, 42, 52, 0.8) inset; */
+  backdrop-filter: blur(10px);
 }
 
 .gui-button::-moz-focus-inner {
@@ -265,17 +299,19 @@ body {
 
 .gui-button:enabled:hover {
   color: #fff;
+  background: rgba(120, 219, 255, 0.36); /* Match global.css hover */
+  /* box-shadow: 0px 0px 15px rgba(120, 219, 255, 0.4); */
 }
 
 .gui-button:active {
-  box-shadow: 0 1px 0 hsla(0, 0%, 100%, .1), inset 0 1px 4px hsla(0, 0%, 0%, .8);
+  box-shadow: 0px 0px 20px rgba(120, 219, 255, 0.6) inset;
 }
 
 .gui-button:disabled {
-  background: #444;
-  color: #555;
+  background: rgba(28, 32, 39, 0.2);
+  color: rgba(240, 240, 240, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.02);
 }
-
 
 /****** widget color ******/
 
@@ -296,7 +332,8 @@ body {
   outline: none;
   border-radius: 4px;
   font-size: 13px;
-  background: #f00;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(240, 240, 240, 0.89);
 }
 
 .gui-widget-color > input + div:hover,
@@ -313,9 +350,12 @@ body {
   width: 125px;
   height: 105px;
   z-index: 2;
-  background: #111;
+  background: rgba(28, 32, 39, 0.95); /* Match global.css */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* box-shadow: 0px 0px 30.2px 3px rgba(52, 59, 66, 0.8) inset; */
+  backdrop-filter: blur(25px);
+  border-radius: 8px;
 }
-
 
 /* saturation */
 
@@ -324,7 +364,7 @@ body {
   width: 100px;
   height: 100px;
   margin-right: 3px;
-  border: 1px solid #555;
+  border: 1px solid rgba(255, 255, 255, 0.08); /* Match global.css border */
   cursor: pointer;
 }
 
@@ -342,11 +382,10 @@ body {
   width: 10px;
   height: 10px;
   z-index: 4;
-  border: #fff;
+  border: 2px solid #78dbff; /* Match global.css accent */
   border-radius: 10px;
-  border: 2px solid white;
+  /* box-shadow: 0px 0px 8px rgba(120, 219, 255, 0.6); */
 }
-
 
 /* hue*/
 
@@ -354,7 +393,7 @@ body {
   display: inline-block;
   width: 15px;
   height: 100px;
-  border: 1px solid #555;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: ns-resize;
 }
 
@@ -363,9 +402,9 @@ body {
   position: absolute;
   width: 15px;
   height: 2px;
-  border-right: 4px solid #fff;
+  border-right: 4px solid #78dbff; /* Match global.css accent */
+  /* box-shadow: 0px 0px 5px rgba(120, 219, 255, 0.6); */
 }
-
 
 /* alpha */
 
@@ -374,7 +413,7 @@ body {
   margin-left: 3px;
   height: 100px;
   width: 15px;
-  border: 1px solid #555;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   cursor: ns-resize;
 }
 
@@ -383,9 +422,9 @@ body {
   position: absolute;
   width: 15px;
   height: 2px;
-  border-right: 4px solid #fff;
+  border-right: 4px solid #78dbff; /* Match global.css accent */
+  /* box-shadow: 0px 0px 5px rgba(120, 219, 255, 0.6); */
 }
-
 
 /****** select ******/
 
@@ -398,23 +437,40 @@ body {
   height: 100%;
   padding-left: 1%;
   outline: none;
-  background: #525f63;
+  background: rgba(28, 32, 39, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 4px;
+  color: rgba(34, 24, 24, 0.95);
+  box-shadow: 0px 0px 7.8px 3px rgba(33, 42, 52, 0.8) inset;
+  backdrop-filter: blur(4px);
+}
+
+.gui-select {
+  color: #ffffff;
+  background: rgba(28, 32, 39, 0.36);
 }
 
 .gui-select:hover {
-  color: #fff;
+  background: rgba(120, 219, 255, 0.2);
 }
 
-
+.gui-select > option {
+  color: white;
+  background: rgba(29, 29, 29, 0.95);
+}
 /****** TOP BAR ******/
 
 .gui-topbar {
   position: absolute;
-  background: #20211d;
+  background: rgba(28, 32, 39, 0.95); /* Match global.css background */
+  /* border: 1px solid rgba(255, 255, 255, 0.08); */
+  /* box-shadow: 0px 0px 46.6px 3px rgba(33, 42, 52, 0.8) inset; */
+  backdrop-filter: blur(40px);
   width: 100%;
   padding-right: 10px;
   padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   z-index: 1;
   float: left;
 }
@@ -431,16 +487,19 @@ body {
   padding: 0 15px;
   position: relative;
   cursor: pointer;
+  color: rgba(240, 240, 240, 0.89);
 }
 
 .gui-topbar ul > li .shortcut {
   float: right;
   font-style: oblique;
   margin-right: 11px;
+  color: rgba(240, 240, 240, 0.6);
 }
 
 .gui-topbar ul > li:hover {
-  color: #fff;
+  /* color: #78dbff; Match global.css accent */
+  /* background: rgba(120, 219, 255, 0.1); */
 }
 
 .gui-topbar ul > li:hover > ul {
@@ -454,10 +513,13 @@ body {
   position: absolute;
   top: 20px;
   left: 10px;
-  background: #222;
+  background: rgba(45, 50, 60, 0.95); /* Match global.css modal backgrounds */
+  /* border: 1px solid rgba(255, 255, 255, 0.08); */
+  /* box-shadow: 0px 0px 30.2px 3px rgba(52, 59, 66, 0.8) inset; */
+  backdrop-filter: blur(25px);
   width: 220px;
   padding: 8px;
-  border-radius: 0 4px 4px 0;
+  border-radius: 8px;
   pointer-events: none;
   opacity: 0;
   -webkit-transition: 0.15s all ease;
@@ -473,15 +535,24 @@ body {
   line-height: 22px;
   margin: 6px 0 6px 0;
   padding-left: 5px;
+  color: rgba(240, 240, 240, 0.89);
+}
+
+.gui-topbar ul > li > ul > li:hover {
+  /* background: rgba(120, 219, 255, 0.2); */
+  /* color: #78dbff; */
+  /* border-radius: 4px; */
+  color: white;
 }
 
 .group-title {
   font-size: 14px;
   font-weight: 600;
-  color: #999 !important;
+  color: rgba(240, 240, 240, 0.6) !important; /* Updated to match global.css */
   cursor: default !important;
   text-align: center;
-  border-bottom: 1px solid #444444;
+  /* border-bottom: 1px solid rgba(255, 255, 255, 0.08);  */
+  /* Match global.css border */
   padding-bottom: 5px;
   margin: 10px 0 10px 0;
 }

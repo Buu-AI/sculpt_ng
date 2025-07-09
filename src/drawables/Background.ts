@@ -46,7 +46,7 @@ class Background {
 
   init() {
     this._texCoordBuffer.update(new Float32Array([0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0]));
-    this._monoTex = this.createOnePixelTexture(50, 50, 50, 255);
+    this._monoTex = this.createOnePixelTexture(14, 17, 27, 255);
     let element = document
       .getElementById('backgroundopen');
     if (element != null) {
