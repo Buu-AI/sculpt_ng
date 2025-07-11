@@ -1,6 +1,7 @@
 /* GUI - Updated to match global.css theme */
 * {
-  font: 13px "Open Sans", sans-serif;
+  font: 13px "Bricolage Grotesque", sans-serif;
+  font-optical-sizing: auto;
   color: rgba(240, 240, 240, 0.89);
   /* Updated to match global.css text colors */
   font-weight: 400;
@@ -180,7 +181,7 @@ body {
   float: right;
   cursor: pointer;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.08); 
+  border: 1px solid rgba(255, 255, 255, 0.08);
   /* Match global.css border */
   border-radius: 4px;
   margin-top: 2px;
@@ -223,7 +224,7 @@ body {
   margin-left: 2%;
   text-align: center;
   outline: none;
-  font-size: 10px;
+  font-size: 11px;
   border-radius: 4px;
   background: rgba(28, 32, 39, 0.36); /* Match global.css */
   /* border: 1px solid rgba(255, 255, 255, 0.08); */
@@ -243,6 +244,7 @@ body {
 
 .gui-slider:hover,
 .gui-input-number:hover {
+  
   background: rgba(120, 219, 255, 0.2); /* Match global.css hover effects */
   /* box-shadow: 0px 0px 10px rgba(120, 219, 255, 0.3); */
 }
