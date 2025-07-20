@@ -14,7 +14,6 @@ var MOUSE_RIGHT = 3;
 // Manage events
 class SculptGL extends Scene {
 
-
   // all x and y position are canvas based
 
   // controllers stuffs
@@ -39,7 +38,6 @@ class SculptGL extends Scene {
 
   protected _timerResetPointer: number;
   protected _timerEndWheel: number;
-
 
   constructor() {
     super();
@@ -103,6 +101,52 @@ class SculptGL extends Scene {
     window.addEventListener('dragover', cbStopAndPrevent, false);
     window.addEventListener('drop', cbLoadFiles, false);
     document.getElementById('fileopen').addEventListener('change', cbLoadFiles, false);
+    
+    // Add message listener for parent window communication
+    window.addEventListener('message', this.onMessage.bind(this), false);
+  }
+
+  // Handle messages from parent window
+  onMessage(event: MessageEvent) {
+    // Check origin for security if needed
+    // if (event.origin !== 'your-allowed-origin') return;
+    
+    if (event.data && event.data.type === 'LOAD_OBJ_FROM_URL') {
+      const url = event.data.url;
+      this.loadObjFromUrl(url);
+    }
+  }
+
+  // Load OBJ file from URL
+  async loadObjFromUrl(url: string) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch OBJ file: ${response.statusText}`);
+      }
+      
+      const objContent = await response.text();
+      this.loadScene(objContent, 'obj');
+      
+      // Optional: Send success message back to parent
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          type: 'OBJ_LOADED_SUCCESS',
+          url: url
+        }, '*');
+      }
+    } catch (error) {
+      console.error('Error loading OBJ file:', error);
+      
+      // Optional: Send error message back to parent
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          type: 'OBJ_LOADED_ERROR',
+          url: url,
+          error: error.message
+        }, '*');
+      }
+    }
   }
 
   onPointer(event) {
@@ -225,7 +269,6 @@ class SculptGL extends Scene {
       }, 60);
     }
   }
-
 
   onPanUpdateNbPointers(nbPointers) {
     // called on panstart or panmove (not consistent)
