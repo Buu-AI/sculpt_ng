@@ -1,11 +1,11 @@
-import { vec3 } from 'gl-matrix';
-import { Manager as HammerManager, Pan, Pinch, Tap } from 'hammerjs';
-import Tablet from './misc/Tablet';
-import Enums from './misc/Enums';
-import Utils from './misc/Utils';
-import Scene from './Scene';
-import Multimesh from './mesh/multiresolution/Multimesh';
-import MeshDynamic from './mesh/dynamic/MeshDynamic';
+import { vec3 } from "gl-matrix";
+import { Manager as HammerManager, Pan, Pinch, Tap } from "hammerjs";
+import Tablet from "./misc/Tablet";
+import Enums from "./misc/Enums";
+import Utils from "./misc/Utils";
+import Scene from "./Scene";
+import Multimesh from "./mesh/multiresolution/Multimesh";
+import MeshDynamic from "./mesh/dynamic/MeshDynamic";
 
 var MOUSE_LEFT = 1;
 var MOUSE_MIDDLE = 2;
@@ -13,7 +13,6 @@ var MOUSE_RIGHT = 3;
 
 // Manage events
 class SculptGL extends Scene {
-
   // all x and y position are canvas based
 
   // controllers stuffs
@@ -67,8 +66,23 @@ class SculptGL extends Scene {
 
     this.initHammer();
     this.addEvents();
+    this.onLoaded();
   }
-
+  onLoaded() {
+    try {
+      setTimeout(() => {
+        window.parent.postMessage(
+          {
+            type: "CANVAS_LOADED",
+            message: "you can loaded the details now",
+          },
+          "*"
+        );
+      }, 1200);
+    } catch (error) {
+      console.log("FAILED TO LOAD");
+    }
+  }
   addEvents() {
     var canvas = this._canvas;
 
@@ -76,42 +90,55 @@ class SculptGL extends Scene {
     var cbOnPointer = this.onPointer.bind(this);
 
     // pointer
-    canvas.addEventListener('pointerdown', cbOnPointer, false);
-    canvas.addEventListener('pointermove', cbOnPointer, false);
-
+    canvas.addEventListener("pointerdown", cbOnPointer, false);
+    canvas.addEventListener("pointermove", cbOnPointer, false);
     // mouse
-    canvas.addEventListener('mousedown', this.onMouseDown.bind(this), false);
-    canvas.addEventListener('mouseup', this.onMouseUp.bind(this), false);
-    canvas.addEventListener('mouseout', this.onMouseOut.bind(this), false);
-    canvas.addEventListener('mouseover', this.onMouseOver.bind(this), false);
-    canvas.addEventListener('mousemove', Utils.throttle(this.onMouseMove.bind(this), 16.66), false);
-    canvas.addEventListener('mousewheel', cbMouseWheel, false);
-    canvas.addEventListener('DOMMouseScroll', cbMouseWheel, false);
+    canvas.addEventListener("mousedown", this.onMouseDown.bind(this), false);
+    canvas.addEventListener("mouseup", this.onMouseUp.bind(this), false);
+    canvas.addEventListener("mouseout", this.onMouseOut.bind(this), false);
+    canvas.addEventListener("mouseover", this.onMouseOver.bind(this), false);
+    canvas.addEventListener(
+      "mousemove",
+      Utils.throttle(this.onMouseMove.bind(this), 16.66),
+      false
+    );
+    canvas.addEventListener("mousewheel", cbMouseWheel, false);
+    canvas.addEventListener("DOMMouseScroll", cbMouseWheel, false);
 
     //key
-    window.addEventListener('keydown', this.onKeyDown.bind(this), false);
-    window.addEventListener('keyup', this.onKeyUp.bind(this), false);
+    window.addEventListener("keydown", this.onKeyDown.bind(this), false);
+    window.addEventListener("keyup", this.onKeyUp.bind(this), false);
 
     var cbLoadFiles = this.loadFiles.bind(this);
     var cbStopAndPrevent = this.stopAndPrevent.bind(this);
     // misc
-    canvas.addEventListener('webglcontextlost', this.onContextLost.bind(this), false);
-    canvas.addEventListener('webglcontextrestored', this.onContextRestored.bind(this), false);
-    window.addEventListener('dragenter', cbStopAndPrevent, false);
-    window.addEventListener('dragover', cbStopAndPrevent, false);
-    window.addEventListener('drop', cbLoadFiles, false);
-    document.getElementById('fileopen').addEventListener('change', cbLoadFiles, false);
-    
+    canvas.addEventListener(
+      "webglcontextlost",
+      this.onContextLost.bind(this),
+      false
+    );
+    canvas.addEventListener(
+      "webglcontextrestored",
+      this.onContextRestored.bind(this),
+      false
+    );
+    window.addEventListener("dragenter", cbStopAndPrevent, false);
+    window.addEventListener("dragover", cbStopAndPrevent, false);
+    window.addEventListener("drop", cbLoadFiles, false);
+    document
+      .getElementById("fileopen")
+      .addEventListener("change", cbLoadFiles, false);
+
     // Add message listener for parent window communication
-    window.addEventListener('message', this.onMessage.bind(this), false);
+    window.addEventListener("message", this.onMessage.bind(this), false);
   }
 
   // Handle messages from parent window
   onMessage(event: MessageEvent) {
     // Check origin for security if needed
     // if (event.origin !== 'your-allowed-origin') return;
-    
-    if (event.data && event.data.type === 'LOAD_OBJ_FROM_URL') {
+    console.log("MESSAGE RECEIVED");
+    if (event.data && event.data.type === "LOAD_OBJ_FROM_URL") {
       const url = event.data.url;
       this.loadObjFromUrl(url);
     }
@@ -124,27 +151,33 @@ class SculptGL extends Scene {
       if (!response.ok) {
         throw new Error(`Failed to fetch OBJ file: ${response.statusText}`);
       }
-      
+
       const objContent = await response.text();
-      this.loadScene(objContent, 'obj');
-      
+      this.loadScene(objContent, "obj");
+
       // Optional: Send success message back to parent
       if (window.parent !== window) {
-        window.parent.postMessage({
-          type: 'OBJ_LOADED_SUCCESS',
-          url: url
-        }, '*');
+        window.parent.postMessage(
+          {
+            type: "OBJ_LOADED_SUCCESS",
+            url: url,
+          },
+          "*"
+        );
       }
     } catch (error) {
-      console.error('Error loading OBJ file:', error);
-      
+      console.error("Error loading OBJ file:", error);
+
       // Optional: Send error message back to parent
       if (window.parent !== window) {
-        window.parent.postMessage({
-          type: 'OBJ_LOADED_ERROR',
-          url: url,
-          error: error.message
-        }, '*');
+        window.parent.postMessage(
+          {
+            type: "OBJ_LOADED_ERROR",
+            url: url,
+            error: error.message,
+          },
+          "*"
+        );
       }
     }
   }
@@ -162,53 +195,61 @@ class SculptGL extends Scene {
   _initHammerRecognizers() {
     var hm = this._hammer;
     // double tap
-    hm.add(new Tap({
-      event: 'doubletap',
-      pointers: 1,
-      taps: 2,
-      time: 250, // def : 250.  Maximum press time in ms.
-      interval: 450, // def : 300. Maximum time in ms between multiple taps.
-      threshold: 5, // def : 2. While doing a tap some small movement is allowed.
-      posThreshold: 50 // def : 30. The maximum position difference between multiple taps.
-    }));
+    hm.add(
+      new Tap({
+        event: "doubletap",
+        pointers: 1,
+        taps: 2,
+        time: 250, // def : 250.  Maximum press time in ms.
+        interval: 450, // def : 300. Maximum time in ms between multiple taps.
+        threshold: 5, // def : 2. While doing a tap some small movement is allowed.
+        posThreshold: 50, // def : 30. The maximum position difference between multiple taps.
+      })
+    );
 
     // double tap 2 fingers
-    hm.add(new Tap({
-      event: 'doubletap2fingers',
-      pointers: 2,
-      taps: 2,
-      time: 250,
-      interval: 450,
-      threshold: 5,
-      posThreshold: 50
-    }));
+    hm.add(
+      new Tap({
+        event: "doubletap2fingers",
+        pointers: 2,
+        taps: 2,
+        time: 250,
+        interval: 450,
+        threshold: 5,
+        posThreshold: 50,
+      })
+    );
 
     // pan
-    hm.add(new Pan({
-      event: 'pan',
-      pointers: 0,
-      threshold: 0
-    }));
+    hm.add(
+      new Pan({
+        event: "pan",
+        pointers: 0,
+        threshold: 0,
+      })
+    );
 
     // pinch
-    hm.add(new Pinch({
-      event: 'pinch',
-      pointers: 2,
-      threshold: 0.1 // Set a minimal thresold on pinch event, to be detected after pan
-    }));
-    hm.get('pinch').recognizeWith(hm.get('pan'));
+    hm.add(
+      new Pinch({
+        event: "pinch",
+        pointers: 2,
+        threshold: 0.1, // Set a minimal thresold on pinch event, to be detected after pan
+      })
+    );
+    hm.get("pinch").recognizeWith(hm.get("pan"));
   }
 
   _initHammerEvents() {
     var hm = this._hammer;
-    hm.on('panstart', this.onPanStart.bind(this));
-    hm.on('panmove', this.onPanMove.bind(this));
-    hm.on('panend pancancel', this.onPanEnd.bind(this));
+    hm.on("panstart", this.onPanStart.bind(this));
+    hm.on("panmove", this.onPanMove.bind(this));
+    hm.on("panend pancancel", this.onPanEnd.bind(this));
 
-    hm.on('doubletap', this.onDoubleTap.bind(this));
-    hm.on('doubletap2fingers', this.onDoubleTap2Fingers.bind(this));
-    hm.on('pinchstart', this.onPinchStart.bind(this));
-    hm.on('pinchin pinchout', this.onPinchInOut.bind(this));
+    hm.on("doubletap", this.onDoubleTap.bind(this));
+    hm.on("doubletap2fingers", this.onDoubleTap2Fingers.bind(this));
+    hm.on("pinchstart", this.onPinchStart.bind(this));
+    hm.on("pinchin pinchout", this.onPinchInOut.bind(this));
   }
 
   stopAndPrevent(event) {
@@ -217,30 +258,29 @@ class SculptGL extends Scene {
   }
 
   onContextLost() {
-    window.alert('Oops... WebGL context lost.');
+    window.alert("Oops... WebGL context lost.");
   }
 
   onContextRestored() {
-    window.alert('Wow... Context is restored.');
+    window.alert("Wow... Context is restored.");
   }
 
   ////////////////
   // KEY EVENTS
   ////////////////
   onKeyDown(e) {
-    this._gui.callFunc('onKeyDown', e);
+    this._gui.callFunc("onKeyDown", e);
   }
 
   onKeyUp(e) {
-    this._gui.callFunc('onKeyUp', e);
+    this._gui.callFunc("onKeyUp", e);
   }
 
   ////////////////
   // MOBILE EVENTS
   ////////////////
   onPanStart(e) {
-    if (e.pointerType === 'mouse')
-      return;
+    if (e.pointerType === "mouse") return;
     this._focusGui = false;
     var evProxy = this._eventProxy;
     evProxy.pageX = e.center.x;
@@ -249,8 +289,7 @@ class SculptGL extends Scene {
   }
 
   onPanMove(e) {
-    if (e.pointerType === 'mouse')
-      return;
+    if (e.pointerType === "mouse") return;
     var evProxy = this._eventProxy;
     evProxy.pageX = e.center.x;
     evProxy.pageY = e.center.y;
@@ -273,14 +312,14 @@ class SculptGL extends Scene {
   onPanUpdateNbPointers(nbPointers) {
     // called on panstart or panmove (not consistent)
     var evProxy = this._eventProxy;
-    evProxy.which = nbPointers === 1 && this._lastNbPointers >= 1 ? 3 : nbPointers;
+    evProxy.which =
+      nbPointers === 1 && this._lastNbPointers >= 1 ? 3 : nbPointers;
     this._lastNbPointers = nbPointers;
     this.onDeviceDown(evProxy);
   }
 
   onPanEnd(e) {
-    if (e.pointerType === 'mouse')
-      return;
+    if (e.pointerType === "mouse") return;
     this.onDeviceUp();
     // we need to detect when all fingers are released
     window.setTimeout(() => {
@@ -306,7 +345,11 @@ class SculptGL extends Scene {
       return this.resetCameraMeshes();
     }
 
-    vec3.transformMat4(pivot, picking.getIntersectionPoint(), picking.getMesh().getMatrix());
+    vec3.transformMat4(
+      pivot,
+      picking.getIntersectionPoint(),
+      picking.getMesh().getMatrix()
+    );
     var zoom = cam._trans[2];
     if (!cam.isOrthographic()) {
       zoom = Math.min(zoom, vec3.dist(pivot, cam.computePosition()));
@@ -335,7 +378,9 @@ class SculptGL extends Scene {
   loadFiles(event) {
     event.stopPropagation();
     event.preventDefault();
-    var files = event.dataTransfer ? event.dataTransfer.files : event.target.files;
+    var files = event.dataTransfer
+      ? event.dataTransfer.files
+      : event.target.files;
     for (var i = 0, nb = files.length; i < nb; ++i) {
       var file = files[i];
       var fileType = this.getFileType(file.name);
@@ -345,20 +390,17 @@ class SculptGL extends Scene {
 
   readFile(file, ftype) {
     var fileType = ftype || this.getFileType(file.name);
-    if (!fileType)
-      return;
+    if (!fileType) return;
 
     var reader = new FileReader();
     var self = this;
     reader.onload = function (evt) {
       self.loadScene(evt.target.result, fileType);
-      (<HTMLInputElement>document.getElementById('fileopen')).value = '';
+      (<HTMLInputElement>document.getElementById("fileopen")).value = "";
     };
 
-    if (fileType === 'obj')
-      reader.readAsText(file);
-    else
-      reader.readAsArrayBuffer(file);
+    if (fileType === "obj") reader.readAsText(file);
+    else reader.readAsArrayBuffer(file);
   }
 
   ////////////////
@@ -368,7 +410,7 @@ class SculptGL extends Scene {
     event.stopPropagation();
     event.preventDefault();
 
-    this._gui.callFunc('onMouseDown', event);
+    this._gui.callFunc("onMouseDown", event);
     this.onDeviceDown(event);
   }
 
@@ -376,25 +418,25 @@ class SculptGL extends Scene {
     event.stopPropagation();
     event.preventDefault();
 
-    this._gui.callFunc('onMouseMove', event);
+    this._gui.callFunc("onMouseMove", event);
     this.onDeviceMove(event);
   }
 
   onMouseOver(event) {
     this._focusGui = false;
-    this._gui.callFunc('onMouseOver', event);
+    this._gui.callFunc("onMouseOver", event);
   }
 
   onMouseOut(event) {
     this._focusGui = true;
-    this._gui.callFunc('onMouseOut', event);
+    this._gui.callFunc("onMouseOut", event);
     this.onMouseUp(event);
   }
 
   onMouseUp(event) {
     event.preventDefault();
 
-    this._gui.callFunc('onMouseUp', event);
+    this._gui.callFunc("onMouseUp", event);
     this.onDeviceUp();
   }
 
@@ -402,7 +444,7 @@ class SculptGL extends Scene {
     event.stopPropagation();
     event.preventDefault();
 
-    this._gui.callFunc('onMouseWheel', event);
+    this._gui.callFunc("onMouseWheel", event);
     var dir = event.wheelDelta === undefined ? -event.detail : event.wheelDelta;
     this.onDeviceWheel(dir > 0 ? 1 : -1);
   }
@@ -411,17 +453,14 @@ class SculptGL extends Scene {
   // HANDLES EVENTS
   ////////////////
   onDeviceUp() {
-    this.setCanvasCursor('default');
+    this.setCanvasCursor("default");
     Multimesh.RENDER_HINT = Multimesh.NONE;
     this._sculptManager.end();
 
     if (this._action === Enums.Action.MASK_EDIT && this._mesh) {
-
       if (this._lastMouseX === this._maskX && this._lastMouseY === this._maskY)
         this.getSculptManager().getTool(Enums.Tools.MASKING).invert();
-      else
-        this.getSculptManager().getTool(Enums.Tools.MASKING).clear();
-
+      else this.getSculptManager().getTool(Enums.Tools.MASKING).clear();
     }
 
     this._action = Enums.Action.NOTHING;
@@ -438,8 +477,7 @@ class SculptGL extends Scene {
     Multimesh.RENDER_HINT = Multimesh.CAMERA;
     this.render();
     // workaround for "end mouse wheel" event
-    if (this._timerEndWheel)
-      window.clearTimeout(this._timerEndWheel);
+    if (this._timerEndWheel) window.clearTimeout(this._timerEndWheel);
     this._timerEndWheel = window.setTimeout(this._endWheel.bind(this), 300);
   }
 
@@ -455,8 +493,7 @@ class SculptGL extends Scene {
   }
 
   onDeviceDown(event) {
-    if (this._focusGui)
-      return;
+    if (this._focusGui) return;
 
     this.setMousePosition(event);
 
@@ -468,13 +505,11 @@ class SculptGL extends Scene {
     if (button === MOUSE_LEFT)
       canEdit = this._sculptManager.start(event.shiftKey);
 
-    if (button === MOUSE_LEFT && canEdit)
-      this.setCanvasCursor('none');
+    if (button === MOUSE_LEFT && canEdit) this.setCanvasCursor("none");
 
     if (button === MOUSE_RIGHT && event.ctrlKey)
       this._action = Enums.Action.CAMERA_ZOOM;
-    else if (button === MOUSE_MIDDLE)
-      this._action = Enums.Action.CAMERA_PAN;
+    else if (button === MOUSE_MIDDLE) this._action = Enums.Action.CAMERA_PAN;
     else if (!canEdit && event.ctrlKey) {
       this._maskX = mouseX;
       this._maskY = mouseY;
@@ -483,10 +518,12 @@ class SculptGL extends Scene {
       this._action = Enums.Action.CAMERA_PAN_ZOOM_ALT;
     else if (button === MOUSE_RIGHT || (button === MOUSE_LEFT && !canEdit))
       this._action = Enums.Action.CAMERA_ROTATE;
-    else
-      this._action = Enums.Action.SCULPT_EDIT;
+    else this._action = Enums.Action.SCULPT_EDIT;
 
-    if (this._action === Enums.Action.CAMERA_ROTATE || this._action === Enums.Action.CAMERA_ZOOM)
+    if (
+      this._action === Enums.Action.CAMERA_ROTATE ||
+      this._action === Enums.Action.CAMERA_ZOOM
+    )
       this._camera.start(mouseX, mouseY);
 
     this._lastMouseX = mouseX;
@@ -498,8 +535,7 @@ class SculptGL extends Scene {
   }
 
   onDeviceMove(event) {
-    if (this._focusGui)
-      return;
+    if (this._focusGui) return;
     this.setMousePosition(event);
 
     var mouseX = this._mouseX;
@@ -507,35 +543,37 @@ class SculptGL extends Scene {
     var action = this._action;
     var speedFactor = this.getSpeedFactor();
 
-    if (action === Enums.Action.CAMERA_ZOOM || (action === Enums.Action.CAMERA_PAN_ZOOM_ALT && !event.altKey)) {
-
+    if (
+      action === Enums.Action.CAMERA_ZOOM ||
+      (action === Enums.Action.CAMERA_PAN_ZOOM_ALT && !event.altKey)
+    ) {
       Multimesh.RENDER_HINT = Multimesh.CAMERA;
-      this._camera.zoom((mouseX - this._lastMouseX + mouseY - this._lastMouseY) * speedFactor);
+      this._camera.zoom(
+        (mouseX - this._lastMouseX + mouseY - this._lastMouseY) * speedFactor
+      );
       this.render();
-
-    } else if (action === Enums.Action.CAMERA_PAN_ZOOM_ALT || action === Enums.Action.CAMERA_PAN) {
-
+    } else if (
+      action === Enums.Action.CAMERA_PAN_ZOOM_ALT ||
+      action === Enums.Action.CAMERA_PAN
+    ) {
       Multimesh.RENDER_HINT = Multimesh.CAMERA;
-      this._camera.translate((mouseX - this._lastMouseX) * speedFactor, (mouseY - this._lastMouseY) * speedFactor);
+      this._camera.translate(
+        (mouseX - this._lastMouseX) * speedFactor,
+        (mouseY - this._lastMouseY) * speedFactor
+      );
       this.render();
-
     } else if (action === Enums.Action.CAMERA_ROTATE) {
-
       Multimesh.RENDER_HINT = Multimesh.CAMERA;
-      if (!event.shiftKey)
-        this._camera.rotate(mouseX, mouseY);
+      if (!event.shiftKey) this._camera.rotate(mouseX, mouseY);
       this.render();
-
     } else {
-
       Multimesh.RENDER_HINT = Multimesh.PICKING;
       this._sculptManager.preUpdate();
 
       if (action === Enums.Action.SCULPT_EDIT) {
         Multimesh.RENDER_HINT = Multimesh.SCULPT;
         this._sculptManager.update();
-        if (this.getMesh() instanceof MeshDynamic)
-          this._gui.updateMeshInfo();
+        if (this.getMesh() instanceof MeshDynamic) this._gui.updateMeshInfo();
       }
     }
 
