@@ -137,7 +137,6 @@ class SculptGL extends Scene {
   onMessage(event: MessageEvent) {
     // Check origin for security if needed
     // if (event.origin !== 'your-allowed-origin') return;
-    console.log("MESSAGE RECEIVED");
     if (event.data && event.data.type === "LOAD_OBJ_FROM_URL") {
       const url = event.data.url;
       this.loadObjFromUrl(url);
